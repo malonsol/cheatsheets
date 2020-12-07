@@ -48,6 +48,7 @@ plt.show()
 
 ### Calculate and show Shap Values for One Prediction
 
+#### 1. Single row Plot
 ```python
 import shap  # package used to calculate Shap values
 
@@ -59,3 +60,38 @@ shap_values = explainer.shap_values(data_for_prediction)
 shap.initjs()
 shap.force_plot(explainer.expected_value[0], shap_values[0], data_for_prediction)
 ```
+
+#### 2. Summary Plots
+```python
+import shap  # package used to calculate Shap values
+
+# Create object that can calculate shap values
+explainer = shap.TreeExplainer(my_model)
+
+# Calculate shap values. This is what we will plot.
+# Calculate shap_values for all of val_X rather than a single row, to have more data for plot.
+shap_values = explainer.shap_values(val_X)
+
+# Make plot. Index of [1] is explained in text below.
+shap.summary_plot(shap_values[1], val_X)
+```
+Caveats:
+1. When plotting, we call `shap_values[1]`. For classification problems, there is a separate array of SHAP values for each possible outcome. In the example, we index in to get the SHAP values for the prediction of "True".
+2. Calculating SHAP values can be slow. It isn't a problem here, because this dataset is small. But you'll want to be careful when running these to plot with reasonably sized datasets. The exception is when using an **`xgboost`** model, which SHAP has some optimizations for and which is thus much faster.
+
+This provides a great overview of the model, but we might want to delve into a single feature. That's where SHAP dependence contribution plots come into play.
+
+### 3. Dependence Contribution Plots
+```python
+import shap  # package used to calculate Shap values
+
+# Create object that can calculate shap values
+explainer = shap.TreeExplainer(my_model)
+
+# Calculate shap values. This is what we will plot.
+shap_values = explainer.shap_values(X)
+
+# Make plot.
+shap.dependence_plot('Ball Possession %', shap_values[1], X, interaction_index="Goal Scored")
+```
+This didn't require writing a lot of code. **But the trick with these techniques is in thinking critically about the results** rather than writing code itself.
