@@ -202,6 +202,50 @@ popular_comments = query_job.to_dataframe()
 popular_comments.head()
 ```
 
+## 4. Order By
+Made-up table of information on pets:
+![Table with dates](https://i.imgur.com/b99zTLv.png)
+### ORDER BY
+![Numbers](https://i.imgur.com/6o9LuTA.png)
+![Text](https://i.imgur.com/ooxuzw3.png)
+Descending order: **DESC**
+![Desc](https://i.imgur.com/IElLJrR.png)
+
+### Dates (DATE / DATETIME)
+The **DATE** format has the year first, then the month, and then the day. It looks like this:
+```python
+YYYY-[M]M-[D]D
+```
+The **DATETIME** format is like the date format ... but with time added at the end.
+
+### EXTRACT
+Often you'll want to look at part of a date, like the year or the day. You can do this with **EXTRACT**.
+![Date](https://i.imgur.com/vhvHIh0.png)
+![Day](https://i.imgur.com/PhoWBO0.png)
+![Week](https://i.imgur.com/A5hqGxY.png)
+
+### Example: Which day of the week has the most fatal motor accidents?
+```python
+# Query to find out the number of accidents for each day of the week
+query = """
+        SELECT COUNT(consecutive_number) AS num_accidents, 
+               EXTRACT(DAYOFWEEK FROM timestamp_of_crash) AS day_of_week
+        FROM `bigquery-public-data.nhtsa_traffic_fatalities.accident_2015`
+        GROUP BY day_of_week
+        ORDER BY num_accidents DESC
+        """
+# Set up the query (cancel the query if it would use too much of 
+# your quota, with the limit set to 1 GB)
+safe_config = bigquery.QueryJobConfig(maximum_bytes_billed=10**9)
+query_job = client.query(query, job_config=safe_config)
+
+# API request - run the query, and convert the results to a pandas DataFrame
+accidents_by_day = query_job.to_dataframe()
+
+# Print the DataFrame
+accidents_by_day
+```
+
 ```python
 
 ```
