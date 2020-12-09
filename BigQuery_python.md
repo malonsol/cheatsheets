@@ -167,7 +167,40 @@ job_post_scores = safe_query_job.to_dataframe()
 job_post_scores.score.mean()
 ```
 
+## 3. Group By, Having & Count
+Made-up table of information on pets:
+![Table](https://i.imgur.com/fI5Pvvp.png)
+### COUNT()
+**COUNT()** returns a count of things.
+![COUNT()](https://i.imgur.com/Eu5HkXq.png)
 
+### GROUP BY()
+**GROUP BY** takes the name of one or more columns, and treats all rows with the same value in that column as a single group when you apply aggregate functions like **COUNT()**.
+![GROUP BY](https://i.imgur.com/tqE9Eh8.png)
+
+### GROUP BY ... HAVING()
+**HAVING** is used in combination with **GROUP BY** to ignore groups that don't meet certain criteria.
+![GROUP BY ... HAVING()](https://i.imgur.com/2ImXfHQ.png)
+```python
+# Query to select comments that received more than 10 replies
+query_popular = """
+                SELECT parent, COUNT(id)
+                FROM `bigquery-public-data.hacker_news.comments`
+                GROUP BY parent
+                HAVING COUNT(id) > 10
+                """
+
+# Set up the query (cancel the query if it would use too much of 
+# your quota, with the limit set to 10 GB)
+safe_config = bigquery.QueryJobConfig(maximum_bytes_billed=10**10)
+query_job = client.query(query_popular, job_config=safe_config)
+
+# API request - run the query, and convert the results to a pandas DataFrame
+popular_comments = query_job.to_dataframe()
+
+# Print the first five rows of the DataFrame
+popular_comments.head()
+```
 
 ```python
 
