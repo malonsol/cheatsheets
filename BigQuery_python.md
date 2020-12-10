@@ -64,6 +64,7 @@ client.list_rows(table, max_results=5).to_dataframe()
 client.list_rows(table, selected_fields=table.schema[:1], max_results=5).to_dataframe()
 ```
 
+
 ## 2. Select, From & Where
 ### Introduction
 We'll begin by using the keywords SELECT, FROM, and WHERE to get data from specific columns based on conditions you specify.
@@ -167,6 +168,7 @@ job_post_scores = safe_query_job.to_dataframe()
 job_post_scores.score.mean()
 ```
 
+
 ## 3. Group By, Having & Count
 Made-up table of information on pets:
 ![Table](https://i.imgur.com/fI5Pvvp.png)
@@ -201,6 +203,7 @@ popular_comments = query_job.to_dataframe()
 # Print the first five rows of the DataFrame
 popular_comments.head()
 ```
+
 
 ## 4. Order By
 Made-up table of information on pets:
@@ -245,6 +248,60 @@ accidents_by_day = query_job.to_dataframe()
 # Print the DataFrame
 accidents_by_day
 ```
+
+
+## 5. As & With
+Made-up table of information on pets:
+![Table with years](https://i.imgur.com/MXrsiAZ.png)
+### AS
+Here's an example of a query *without* an **AS** clause:
+![without_AS](https://i.imgur.com/VelX9tP.png)
+And here's an example of the same query, but *with* **AS**:
+![with_AS](https://i.imgur.com/teF84tU.png)
+
+### WITH ... AS
+A **common table expression** (or **CTE**) is a temporary table that you return within your query. CTEs are helpful for splitting your queries into readable chunks, and you can write queries against them.
+![WITH_AS_incomplete](https://i.imgur.com/0Kz8q4x.png)
+While this incomplete query above won't return anything, it creates a CTE that we can then refer to (as `Seniors`) while writing the rest of the query.
+We can finish the query by pulling the information that we want from the CTE. The complete query below first creates the CTE, and then returns all of the IDs from it.
+![WITH_AS_complete](https://i.imgur.com/3xQZM4p.png)
+Also, it's important to note that CTEs only exist inside the query where you create them, and you can't reference them in later queries. So, any query that uses a CTE is always broken into two parts:
+1. first, we create the CTE, and then
+2. we write a query that uses the CTE.
+
+### Example: How many Bitcoin transactions are made per day?
+```python
+# Query to select the number of transactions per date, sorted by date
+query_with_CTE = """ 
+                 WITH time AS 
+                 (
+                     SELECT DATE(block_timestamp) AS trans_date
+                     FROM `bigquery-public-data.crypto_bitcoin.transactions`
+                 )
+                 SELECT COUNT(1) AS transactions,
+                        trans_date
+                 FROM time
+                 GROUP BY trans_date
+                 ORDER BY trans_date
+                 """
+
+# Set up the query (cancel the query if it would use too much of 
+# your quota, with the limit set to 10 GB)
+safe_config = bigquery.QueryJobConfig(maximum_bytes_billed=10**10)
+query_job = client.query(query_with_CTE, job_config=safe_config)
+
+# API request - run the query, and convert the results to a pandas DataFrame
+transactions_by_date = query_job.to_dataframe()
+
+# Print the first five rows
+transactions_by_date.head()
+
+transactions_by_date.set_index('trans_date').plot()
+```
+![WITH_AS_example](https://www.kaggleusercontent.com/kf/43796883/eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..jsKNz9xpuEw9Z2MCHygaOw.vr6hEhtmQxWu5ZEnWjTDCt2WMs0PFpp6OAbWkHPedmqf6rFcedHZSdIpy52UpYTnkCFw8TWk2neUivKUW6IUah5QHXiXUXw3s50jfe-hBBzmgnMAmuD-nMUX1q_QVRMXxFe_k5pL8fWe0r8GV4fnOPfg_Gg8aq0gYK1DKCH4IeKdG2Qn_AoWwPef--ta73Xy92fxfdMHcHi2LbKCimF0sMD42OgTDK1jlr0LuBRoGm822gfggOjv2Hmq9y5ILTnMDhjP8jQbxxG8GLww3pzBp6LH8Vw5-f8Y3nMc-9oAWDK1Wd2ryAtvBhINzLBXwnLnMlkdaThbTQ78_W6PHk8CDcPoRs1GZiAp7Uh5Dzf-MbIhfWa2aWfOqW9mlx6rjgNQcPsCoYoxgQ93aSsHSotREf5mlfnH6VQBtbWxPWefcBOS0Mlt_Zl0s_vn3tsgwjbvnBP8P2NlkJ_7o4ce3RPAnhliYDSO6lS-BHJWtZ4YZAx8fPhaNxj30033G1Cfx1-lNmp8yd69Ad0WfrNtPsxbG8NpEMRb3uVTNmAYyuGQWZ6M4wV3nWt0lMaMC-gJXTdPl2Sa5CczDBFkohi39CaWJbVrH3q6BEMhyvkWAjbbM9nPZnSjZ4Ky_I1tNgn0yFvj.7VPJtQ406JdK84DSPW5vng/__results___files/__results___6_1.png)
+
+As you can see, common table expressions (CTEs) let you shift a lot of your data cleaning into SQL. That's an especially good thing in the case of BigQuery, because **it is vastly faster than doing the work in Pandas**.
+
 
 ```python
 
