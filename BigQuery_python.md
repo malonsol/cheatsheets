@@ -303,7 +303,31 @@ transactions_by_date.set_index('trans_date').plot()
 As you can see, common table expressions (CTEs) let you shift a lot of your data cleaning into SQL. That's an especially good thing in the case of BigQuery, because **it is vastly faster than doing the work in Pandas**.
 
 
+## 6. Joining Data
+Made-up tables of information on pets and owners:
+![JOIN_Two_tables](https://i.imgur.com/eXvIORm.png)
+![JOIN_Two_tables_Query](https://i.imgur.com/fLlng42.png)
+- *In general, when you're joining tables, it's a good habit to specify which table each of your columns comes from. That way, you don't have to pull up the schema every time you go back to read the query.*
+
+The type of **JOIN** we're using today is called an **INNER JOIN**. That means that a row will only be put in the final output table if the value in the columns you're using to combine them shows up in both the tables you're joining. For example, if Tom's ID number of 4 didn't exist in the pets table, we would only get 3 rows back from this query. There are other types of **JOIN**.
+
+### Example: How many files are covered by each type of software license?
 ```python
+# Query to determine the number of files per license, sorted by number of files
+query = """
+        SELECT L.license, COUNT(1) AS number_of_files
+        FROM `bigquery-public-data.github_repos.sample_files` AS sf
+        INNER JOIN `bigquery-public-data.github_repos.licenses` AS L 
+            ON sf.repo_name = L.repo_name
+        GROUP BY L.license
+        ORDER BY number_of_files DESC
+        """
 
+# Set up the query (cancel the query if it would use too much of 
+# your quota, with the limit set to 10 GB)
+safe_config = bigquery.QueryJobConfig(maximum_bytes_billed=10**10)
+query_job = client.query(query, job_config=safe_config)
+
+# API request - run the query, and convert the results to a pandas DataFrame
+file_count_by_license = query_job.to_dataframe()
 ```
-
