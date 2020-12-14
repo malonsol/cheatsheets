@@ -88,6 +88,17 @@ query = """
         WHERE country = 'US'
         """
 ```
+#### ***WHERE ... LIKE ...* (applied to text)**
+A **WHERE** clause can limit your results to rows with certain text using the **LIKE** feature. For example, to select just the third row of the pets table from the tutorial, we could use the query in the picture below.
+![WHERE_LIKE](https://i.imgur.com/RccsXBr.png)
+You can also use **`%`** as a "wildcard" for any number of characters. So you can also get the third row with:
+```python
+query = """
+        SELECT * 
+        FROM `bigquery-public-data.pet_records.pets` 
+        WHERE Name LIKE '%ipl%'
+        """
+```
 
 ### Submitting the query to the dataset
 ```python
