@@ -21,7 +21,7 @@ test = pd.read_csv('test.csv')
 train = train.drop('Loan_ID', axis=1)
 train.dtypes
 ```
-![dtypes](https://us.hidester.com/proxy.php?u=eJwBQAC%2F%2F3M6NTY6IjxTxv8lvmwON%2FEkrH8E%2F7WBbmlIeBquAnhOJtDBRpArEbJfvZ00URuwgRDYUJyEDIHDJeg6%2FNlFIjtb3Bto&b=7)
+![dtypes](https://miro.medium.com/max/225/1*FwcsHWMOc07JzgfZbQjtfg.png)
 
 I can see that I have both categorical and numeric variables so as a minimum I am going to have to apply a one hot encoding transformation and some sort of scaler.
 
@@ -102,7 +102,7 @@ for classifier in classifiers:
     print("model score: %.3f" % pipe.score(X_test, y_test))
 ```
 
-![model_scores](https://us.hidester.com/proxy.php?u=eJwBQQC%2B%2F3M6NTc6IjxTxv8lvmwON%2FEkrH8E%2F7WBbmlIeBquAn5JJsffXfwlQqQgnKk%2FYlzqmlvSAImPb536KMtzosdMnCI7mM4ddA%3D%3D&b=7)
+![model_scores](https://miro.medium.com/max/700/1*y0e7vyDPwmQ1m6Oi2vMkDg.png)
 
 **The pipeline can also be used in grid search** to find the best performing parameters.
 To do this you first need to create a parameter grid for your chosen model.
