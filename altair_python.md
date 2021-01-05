@@ -1,3 +1,5 @@
+Additional source: [How to Create Interactive Plots with Altair](https://towardsdatascience.com/how-to-create-interactive-and-elegant-plot-with-altair-8dd87a890f2a)
+
 # Import altair
 
 ```python
