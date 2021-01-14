@@ -28,3 +28,6 @@
 ### Interesting sources:
 - [Data Science Performance Metrics for Everyone](https://towardsdatascience.com/data-science-performance-metrics-for-everyone-4d68f4859eef)
 - [Beyond Accuracy: Precision and Recall](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c)→ **Very well explained!!**
+- [Imbalanced Data : How to handle Imbalanced Classification Problems](https://www.analyticsvidhya.com/blog/2017/03/imbalanced-data-classification/)
+ - Standard classifier algorithms like Decision Tree and Logistic Regression have a bias towards classes which have number of instances. **They tend to only predict the majority class data. The features of the minority class are treated as noise and are often ignored. Thus, there is a high probability of misclassification of the minority class as compared to the majority class.**
+ - The main objective of **balancing classes** is to either increasing the frequency of the minority class or decreasing the frequency of the majority class. This is done in order to **obtain approximately the same number of instances for both the classes**.
