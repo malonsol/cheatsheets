@@ -23,3 +23,7 @@
         - The F1 score can be interpreted as a weighted average of the precision and recall, where an F1 score reaches its best value at 1 and worst score at 0. The relative contribution of precision and recall to the F1 score are equal: `F1 = 2 * (precision * recall) / (precision + recall)`
     - [precision_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score)
     - [recall_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score)
+    
+    
+### Interesting sources:
+- [Data Science Performance Metrics for Everyone](https://towardsdatascience.com/data-science-performance-metrics-for-everyone-4d68f4859eef)
