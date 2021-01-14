@@ -27,4 +27,4 @@
     
 ### Interesting sources:
 - [Data Science Performance Metrics for Everyone](https://towardsdatascience.com/data-science-performance-metrics-for-everyone-4d68f4859eef)
-- [Beyond Accuracy: Precision and Recall](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c)→ **Very well explained!!*
+- [Beyond Accuracy: Precision and Recall](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c)→ **Very well explained!!**
