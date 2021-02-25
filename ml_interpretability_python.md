@@ -1,3 +1,8 @@
+Source: [Kaggle course: Machine Learning Explainability](https://www.kaggle.com/learn/machine-learning-explainability)  
+
+Additional info:
+- SHAP explanation: [F1 Predictor. MODEL INTERPRETABILITY WITH SHAP](https://www.f1-predictor.com/model-interpretability-with-shap/)
+
 ### Given a model...
 
 ```python
