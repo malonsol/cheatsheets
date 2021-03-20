@@ -61,16 +61,16 @@
     lin_rmse
     ```
 #### Better Evaluation Using **Cross-Validation**:
-    - 1st option: use the `train_test_split` function to split the training set into a smaller training set and a validation set
-    - 2nd alternative: *K-fold cross-validation* feature:
+- 1st option: use the `train_test_split` function to split the training set into a smaller training set and a validation set
+- 2nd alternative: *K-fold cross-validation* feature:
     ```python
     from sklearn.model_selection import cross_val_score
     scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
     scoring="neg_mean_squared_error", cv=10)
     tree_rmse_scores = np.sqrt(-scores)
     ```
-        - **cross-validation** features expect a utility function (greater is better) rather than a cost function (lower is better)
-    - *You should save every model you experiment with, so you can come back easily to any model you want. Make sure you save  both the hyperparameters and the trained parameters, as well as the cross-validation scores and perhaps the actual predictions as well. This will allow you to easily compare scores across model types, and compare the types of errors they make.*
+    - **cross-validation** features expect a utility function (greater is better) rather than a cost function (lower is better)
+- *You should save every model you experiment with, so you can come back easily to any model you want. Make sure you save  both the hyperparameters and the trained parameters, as well as the cross-validation scores and perhaps the actual predictions as well. This will allow you to easily compare scores across model types, and compare the types of errors they make.*
     ```python
     from sklearn.externals import joblib
     joblib.dump(my_model, "my_model.pkl")
@@ -180,9 +180,9 @@ sorted(zip(feature_importances, attributes), reverse=True)
     - `max_features` (maximum number of features that are evaluated for splitting at each node)
 - **Increasing `min_*` hyperparameters or reducing `max_*` hyperparameters will regularize the model**
 ### Instability
-    - Limitation → Trees follow orthogonal decision boundaries → Sensitive to "data rotation" → Overfitting → Overcome by combination with PCA
-    - Main issue → Very sensitive to small variations in the training data
-        - Stochastic algorithm → It randomly selects the set of features to evaluate at each node
+- Limitation → Trees follow orthogonal decision boundaries → Sensitive to "data rotation" → Overfitting → Overcome by combination with PCA
+- Main issue → Very sensitive to small variations in the training data
+    - Stochastic algorithm → It randomly selects the set of features to evaluate at each node
 
 
 ## Chapter 8. Dimensionality Reduction
@@ -203,15 +203,15 @@ sorted(zip(feature_importances, attributes), reverse=True)
     - There is a standard matrix factorization technique called **Singular Value Decomposition (SVD)**
 - PCA assumes that the dataset is centered around the origin: Scikit-Learn’s PCA classes take care of centering the data for you
 #### Using Scikit-Learn
-    ```python
-    from sklearn.decomposition import PCA
+```python
+from sklearn.decomposition import PCA
 
-    pca = PCA(n_components = 2)
-    X2D = pca.fit_transform(X)
+pca = PCA(n_components = 2)
+X2D = pca.fit_transform(X)
 
-    # You can access the principal components using the 'components_ variable':
-    first_PCA = pca.components_.T[:,0]
-    ```
+# You can access the principal components using the 'components_ variable':
+first_PCA = pca.components_.T[:,0]
+```
 #### Explained Variance Ratio
 - *Explained variance ratio* of each principal component → It indicates the **proportion of the dataset’s variance that lies along the axis** of each principal component
     ```python
