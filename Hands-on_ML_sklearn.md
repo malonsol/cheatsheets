@@ -19,6 +19,7 @@
 - Data transformation steps need to be executed in the right order → Scikit-Learn's `Pipeline` class
     ```python
     from sklearn.pipeline import Pipeline
+    from sklearn.impute import SimpleImputer
     from sklearn.preprocessing import StandardScaler
     num_pipeline = Pipeline([
             ('imputer', SimpleImputer(strategy="median")),
