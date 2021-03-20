@@ -37,6 +37,7 @@
     - Single transformer able to handle categorical columns and the numerical columns altogether: `ColumnTransformer`
         ```python
         from sklearn.compose import ColumnTransformer
+        from sklearn.preprocessing import OneHotEncoder
         num_attribs = list(housing_num)
         cat_attribs = ["ocean_proximity"]
         full_pipeline = ColumnTransformer([
