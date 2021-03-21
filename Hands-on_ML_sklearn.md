@@ -6,8 +6,9 @@
     - Use use Pandas’ `scatter_matrix` function, which plots every numerical attribute against every other numerical attribute → **Only for relatively small dataset, otherwise kernel dies!!**
     ```python
     from pandas.plotting import scatter_matrix
-    attributes = ["median_house_value", "median_income", "total_rooms",
-    "housing_median_age"]
+    
+    attributes = ["median_house_value", "median_income", "total_rooms", "housing_median_age"]
+    
     scatter_matrix(housing[attributes], figsize=(12, 8))
     ```
 
@@ -21,11 +22,13 @@
     from sklearn.pipeline import Pipeline
     from sklearn.impute import SimpleImputer
     from sklearn.preprocessing import StandardScaler
+    
     num_pipeline = Pipeline([
             ('imputer', SimpleImputer(strategy="median")),
             ('attribs_adder', CombinedAttributesAdder()),
             ('std_scaler', StandardScaler()),
         ])
+        
     housing_num_tr = num_pipeline.fit_transform(housing_num)
     ```
     - All **but the last estimator** must be transformers (i.e., they must have a `fit_transform()` method)
@@ -38,12 +41,15 @@
         ```python
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
+        
         num_attribs = list(housing_num)
         cat_attribs = ["ocean_proximity"]
+        
         full_pipeline = ColumnTransformer([
                 ("num", num_pipeline, num_attribs),
                 ("cat", OneHotEncoder(), cat_attribs),
             ])
+            
         housing_prepared = full_pipeline.fit_transform(housing)
         ```
 ### Select and Train a Model
@@ -51,8 +57,10 @@
 - Let’s first train a Linear Regression model:
     ```python
     from sklearn.linear_model import LinearRegression
+    
     lin_reg = LinearRegression()
     lin_reg.fit(housing_prepared, housing_labels)
+    
     # Let’s measure this regression model’s RMSE on the whole training set:
     from sklearn.metrics import mean_squared_error
     housing_predictions = lin_reg.predict(housing_prepared)
@@ -65,15 +73,19 @@
 - 2nd alternative: *K-fold cross-validation* feature:
     ```python
     from sklearn.model_selection import cross_val_score
+    
     scores = cross_val_score(tree_reg, housing_prepared, housing_labels,
-    scoring="neg_mean_squared_error", cv=10)
+                             scoring="neg_mean_squared_error", cv=10)
+                             
     tree_rmse_scores = np.sqrt(-scores)
     ```
     - **cross-validation** features expect a utility function (greater is better) rather than a cost function (lower is better)
 - *You should save every model you experiment with, so you can come back easily to any model you want. Make sure you save  both the hyperparameters and the trained parameters, as well as the cross-validation scores and perhaps the actual predictions as well. This will allow you to easily compare scores across model types, and compare the types of errors they make.*
     ```python
     from sklearn.externals import joblib
+    
     joblib.dump(my_model, "my_model.pkl")
+    
     # and later...
     my_model_loaded = joblib.load("my_model.pkl")
     ```
@@ -82,14 +94,18 @@
 #### Grid Search
 ```python
 from sklearn.model_selection import GridSearchCV
+
 param_grid = [
-{'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]},
-{'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
-]
+        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]},
+        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
+    ]
+    
 forest_reg = RandomForestRegressor()
+
 grid_search = GridSearchCV(forest_reg, param_grid, cv=5,
-scoring='neg_mean_squared_error',
-return_train_score=True)
+                           scoring='neg_mean_squared_error',
+                           return_train_score=True)
+                           
 grid_search.fit(housing_prepared, housing_labels)
 ```
 - First evaluate all 3 × 4 = 12 combinations; then try all 2 × 3 = 6 combinations; it will train each model five times (since we are using five-fold cross validation) → In other words, all in all, there will be 18 × 5 = **90 rounds of training!**
@@ -99,6 +115,7 @@ grid_search.fit(housing_prepared, housing_labels)
 #### Analyze the Best Models and Their Errors
 ```python
 feature_importances = grid_search.best_estimator_.feature_importances_
+
 extra_attribs = ["rooms_per_hhold", "pop_per_hhold", "bedrooms_per_room"]
 cat_encoder = full_pipeline.named_transformers_["cat"]
 cat_one_hot_attribs = list(cat_encoder.categories_[0])
@@ -119,8 +136,10 @@ sorted(zip(feature_importances, attributes), reverse=True)
 - You might want to have an idea of how precise this estimate is. For this, you can compute a 95% confidence interval for the generalization error using `scipy.stats.t.interval()`:
     ```python
     from scipy import stats
+    
     confidence = 0.95
     squared_errors = (final_predictions - y_test) ** 2
+    
     np.sqrt(stats.t.interval(confidence, len(squared_errors) - 1,
                              loc=squared_errors.mean(),
                              scale=stats.sem(squared_errors)))
@@ -134,24 +153,32 @@ sorted(zip(feature_importances, attributes), reverse=True)
 - `cross_val_predict()` function:
     ```python
     from sklearn.model_selection import cross_val_predict
+    
     y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
 
+
     from sklearn.metrics import confusion_matrix
+    
     confusion_matrix(y_train_5, y_train_pred)
     ```
 #### Precision/Recall Tradeoff
 - How do you decide which threshold to use?
     ```python
     from sklearn.model_selection import cross_val_predict
+    
     y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
 
+
     from sklearn.metrics import confusion_matrix
+    
     confusion_matrix(y_train_5, y_train_pred)
     
     y_scores = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3,
                                  method="decision_function") # Similar to 'predict_proba()'
     
+    
     from sklearn.metrics import precision_recall_curve
+    
     precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_scores)
     
     def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
